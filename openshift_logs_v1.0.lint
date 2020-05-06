@@ -1,0 +1,475 @@
+{
+  "manifest": {
+    "name": "Openshift_Logs",
+    "info": "This Content Pack includes Dashboard and Queries for Openshift Logs. Ensure Logforwarding is configured to forward logs from the Openshift Container Platform to vRealize Log Insight Cloud.     The Procedure listed here https://blogs.vmware.com/management/2020/04/configure-log-forwarding-from-openshift-container-platform-to-vrealize-log-insight-cloud.html",
+    "namespace": "openshift.logs.vrlic",
+    "contentVersion": "1.0",
+    "author": "Munishpal Makhija"
+  },
+  "queries": [
+    {
+      "id": "openshift.logs.vrlic.openshiftnamespaces",
+      "name": "Openshift - Namespaces",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "EXISTS",
+            "fieldName": "kubernetes_namespace_name",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "fieldName": "kubernetes_namespace_name",
+          "functionName": "UCOUNT"
+        }
+      ],
+      "groupByTerms": [],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "PIE",
+          "options": {
+            "donut": "true"
+          }
+        }
+      }
+    },
+    {
+      "id": "openshift.logs.vrlic.openshiftlogging_infra_stderr",
+      "name": "Openshift - Logging Infra StdErr",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "CONTAINS",
+            "fieldName": "kubernetes_namespace_name",
+            "value": "openshift-logging",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "DOES_NOT_CONTAIN",
+            "fieldName": "kubernetes_container_name",
+            "value": "fluentd-lint",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "CONTAINS",
+            "fieldName": "stream",
+            "value": "stderr",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "functionName": "COUNT"
+        }
+      ],
+      "groupByTerms": [
+        {
+          "fieldName": "timestamp",
+          "groupByType": "FIXED_BUCKET"
+        }
+      ],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "AREA",
+          "options": {}
+        }
+      }
+    },
+    {
+      "id": "openshift.logs.vrlic.openshiftmonitoring_pods_stderr",
+      "name": "Openshift - Monitoring Pods StdErr",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "CONTAINS",
+            "fieldName": "kubernetes_namespace_name",
+            "value": "openshift-monitoring",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "CONTAINS",
+            "fieldName": "stream",
+            "value": "stderr",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "functionName": "COUNT"
+        }
+      ],
+      "groupByTerms": [
+        {
+          "fieldName": "kubernetes_pod_name",
+          "groupByType": "EACH_VALUE"
+        }
+      ],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "PIE",
+          "options": {
+            "donut": "true"
+          }
+        }
+      }
+    },
+    {
+      "id": "openshift.logs.vrlic.openshiftnumber_of_containers",
+      "name": "Openshift - Number of Containers",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "EXISTS",
+            "fieldName": "docker_container_id",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "fieldName": "docker_container_id",
+          "functionName": "UCOUNT"
+        }
+      ],
+      "groupByTerms": [],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "AREA",
+          "options": {}
+        }
+      }
+    },
+    {
+      "id": "openshift.logs.vrlic.openshiftapp_labels_stderr",
+      "name": "Openshift - App Labels StdErr",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "CONTAINS",
+            "fieldName": "stream",
+            "value": "stderr",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "functionName": "COUNT"
+        }
+      ],
+      "groupByTerms": [
+        {
+          "fieldName": "kubernetes_labels_app",
+          "groupByType": "EACH_VALUE"
+        }
+      ],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "COLUMN",
+          "options": {
+            "colorTheme": "[\"#f55524\",\"#454545\",\"#4b970c\",\"#ffb38f\",\"#dedede\",\"#68c71a\"]",
+            "gradient": "true",
+            "log_axis": "true"
+          }
+        }
+      }
+    },
+    {
+      "id": "openshift.logs.vrlic.openshiftnumber_of_nodes",
+      "name": "Openshift - Number of Nodes",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "EXISTS",
+            "fieldName": "kubernetes_host",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "fieldName": "kubernetes_host",
+          "functionName": "UCOUNT"
+        }
+      ],
+      "groupByTerms": [],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "AREA",
+          "options": {}
+        }
+      }
+    },
+    {
+      "id": "openshift.logs.vrlic.openshift_number_of_pods",
+      "name": "Openshift- Number of PODs",
+      "description": "",
+      "constraints": {
+        "operator": "AND",
+        "constraints": [
+          {
+            "operator": "CONTAINS",
+            "fieldName": "environment",
+            "value": "openshift",
+            "constraints": [],
+            "tags": []
+          },
+          {
+            "operator": "EXISTS",
+            "fieldName": "kubernetes_pod_name",
+            "constraints": [],
+            "tags": []
+          }
+        ],
+        "tags": []
+      },
+      "aggregationFunctions": [
+        {
+          "fieldName": "kubernetes_pod_name",
+          "functionName": "UCOUNT"
+        }
+      ],
+      "groupByTerms": [],
+      "isAnnotation": false,
+      "widget": {
+        "visualization": {
+          "type": "AREA",
+          "options": {}
+        }
+      }
+    }
+  ],
+  "extractedFields": [],
+  "alerts": [],
+  "dashboards": [
+    {
+      "id": "openshift.logs.vrlic.openshift_logs_dashboard",
+      "name": "Openshift Logs Dashboard",
+      "widgetList": [
+        {
+          "name": "Openshift - Namespaces",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshiftnamespaces",
+          "widgetType": "CHART",
+          "widgetPlacement": {
+            "minHeight": 3,
+            "x": 9,
+            "width": 3,
+            "y": 0,
+            "minWidth": 3,
+            "height": 3
+          },
+          "visualization": {
+            "type": "PIE",
+            "options": {
+              "donut": "true"
+            }
+          },
+          "widgetProperties": {}
+        },
+        {
+          "name": "Openshift - App Labels StdErr",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshiftapp_labels_stderr",
+          "widgetType": "CHART",
+          "widgetPlacement": {
+            "minHeight": 3,
+            "x": 0,
+            "width": 6,
+            "y": 3,
+            "minWidth": 3,
+            "height": 4
+          },
+          "visualization": {
+            "type": "COLUMN",
+            "options": {
+              "gradient": "true",
+              "colorTheme": "[\"#f55524\",\"#454545\",\"#4b970c\",\"#ffb38f\",\"#dedede\",\"#68c71a\"]",
+              "log_axis": "true"
+            }
+          },
+          "widgetProperties": {}
+        },
+        {
+          "name": "Openshift- No. of PODs",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshift_number_of_pods",
+          "widgetType": "CHART",
+          "widgetPlacement": {
+            "minHeight": 3,
+            "x": 3,
+            "width": 3,
+            "y": 0,
+            "minWidth": 3,
+            "height": 3
+          },
+          "visualization": {
+            "type": "AREA",
+            "options": {}
+          },
+          "widgetProperties": {}
+        },
+        {
+          "name": "Openshift - No. of Containers",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshiftnumber_of_containers",
+          "widgetType": "CHART",
+          "widgetPlacement": {
+            "minHeight": 3,
+            "x": 6,
+            "width": 3,
+            "y": 0,
+            "minWidth": 3,
+            "height": 3
+          },
+          "visualization": {
+            "type": "AREA",
+            "options": {}
+          },
+          "widgetProperties": {}
+        },
+        {
+          "name": "Openshift - No. of Nodes",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshiftnumber_of_nodes",
+          "widgetType": "CHART",
+          "widgetPlacement": {
+            "minHeight": 3,
+            "x": 0,
+            "width": 3,
+            "y": 0,
+            "minWidth": 3,
+            "height": 3
+          },
+          "visualization": {
+            "type": "AREA",
+            "options": {}
+          },
+          "widgetProperties": {}
+        },
+        {
+          "name": "Openshift - Logging Infra StdErr",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshiftlogging_infra_stderr",
+          "widgetType": "FIELD_TABLE",
+          "widgetPlacement": {
+            "minHeight": 5,
+            "x": 0,
+            "width": 12,
+            "y": 7,
+            "minWidth": 6,
+            "height": 5
+          },
+          "visualization": {
+            "type": "AREA",
+            "options": {}
+          },
+          "widgetProperties": {
+            "fieldTableColumns": []
+          }
+        },
+        {
+          "name": "Openshift - Monitoring POD StdErr",
+          "description": "",
+          "queryDefinitionLink": "openshift.logs.vrlic.openshiftmonitoring_pods_stderr",
+          "widgetType": "CHART",
+          "widgetPlacement": {
+            "minHeight": 3,
+            "x": 6,
+            "width": 6,
+            "y": 3,
+            "minWidth": 3,
+            "height": 4
+          },
+          "visualization": {
+            "type": "PIE",
+            "options": {
+              "donut": "true"
+            }
+          },
+          "widgetProperties": {}
+        }
+      ]
+    }
+  ],
+  "agentGroups": []
+}

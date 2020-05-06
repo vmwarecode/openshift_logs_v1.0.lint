@@ -1,1 +1,0 @@
-# openshift_logs_v1.0.lint
